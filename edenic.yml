@@ -19,3 +19,8 @@ devices:
     type: "pro_controller"
     label: "4q3f"
     # id: "08041fa0-6ea2-11ef-9d80-63543a698b74"
+
+  - name: "Radix Bluelab Pro Controller"
+    type: "pro_controller"
+    label: "52rf"
+    # id: "08041fa0-6ea2-11ef-9d80-63543a698b74"
