@@ -1,0 +1,21 @@
+app:
+  log_level: "DEBUG"
+
+  # MQTT
+  mqtt_host: "localhost"
+  mqtt_port: 1883
+  mqtt_username: "hamqtt"
+  mqtt_password: "UbT4Rn3oY7!S9L"
+
+  # Home Assistant MQTT Discovery
+  discovery_prefix: "homeassistant"
+
+  # Edenic API
+  org_key: "9e9efe10-6e9f-11ef-9338-8dff4b34f2dc"
+  api_key: "ed_jry99y9dgf8bomuw2j5xsm4qt4mezwu75rkwop2y2n8phub1rslktmbbo2zb4kz8"
+
+devices:
+  - name: "Farm Bluelab Pro Controller"
+    type: "pro_controller"
+    label: "4q3f"
+    # id: "08041fa0-6ea2-11ef-9d80-63543a698b74"
