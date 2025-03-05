@@ -135,13 +135,15 @@ def create_on_connect(app_config: AppConfig) -> Callable:
                         d.temp_state_topic = state_topic
                     elif stype == "EC":
                         d.ec_state_topic = state_topic
-                    munit = {"pH": "pH", "Temp": "°C", "EC": "EC"}.get(stype)
+                    # https://www.home-assistant.io/integrations/sensor/#device-class
+                    dclass = {"pH": "ph", "Temp": "temperature  ", "EC": None}.get(
+                        stype
+                    )
                     payload = {
                         "name": f"Bluelab {stype} {d.label}",
-                        "device_class": None,
+                        "device_class": dclass,
                         "state_topic": state_topic,
                         "unique_id": sname,
-                        "unit_of_measurement": munit,
                         "expire_after": LOOP_DELAY * 2,
                     }
                     client.publish(config_topic, json.dumps(payload).encode("utf8"))
