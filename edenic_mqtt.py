@@ -136,7 +136,7 @@ def create_on_connect(app_config: AppConfig) -> Callable:
                     elif stype == "EC":
                         d.ec_state_topic = state_topic
                     # https://www.home-assistant.io/integrations/sensor/#device-class
-                    dclass = {"pH": "ph", "Temp": "temperature  ", "EC": None}.get(
+                    dclass = {"pH": "ph", "Temp": "temperature", "EC": None}.get(
                         stype
                     )
                     payload = {
