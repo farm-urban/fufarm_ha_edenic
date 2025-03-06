@@ -11,8 +11,8 @@ app:
   discovery_prefix: "homeassistant"
 
   # Edenic API
-  org_key: "9e9efe10-6e9f-11ef-9338-8dff4b34f2dc"
-  api_key: "ed_jry99y9dgf8bomuw2j5xsm4qt4mezwu75rkwop2y2n8phub1rslktmbbo2zb4kz8"
+  org_key: ""
+  api_key: ""
 
 devices:
   - name: "Farm Bluelab Pro Controller"
