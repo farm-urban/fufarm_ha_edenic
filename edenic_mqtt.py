@@ -136,9 +136,7 @@ def create_on_connect(app_config: AppConfig) -> Callable:
                     elif stype == "EC":
                         d.ec_state_topic = state_topic
                     # https://www.home-assistant.io/integrations/sensor/#device-class
-                    dclass = {"pH": "ph", "Temp": "temperature", "EC": None}.get(
-                        stype
-                    )
+                    dclass = {"pH": "ph", "Temp": "temperature", "EC": None}.get(stype)
                     payload = {
                         "name": f"Bluelab {stype} {d.label}",
                         "device_class": dclass,
@@ -146,7 +144,12 @@ def create_on_connect(app_config: AppConfig) -> Callable:
                         "unique_id": sname,
                         "expire_after": LOOP_DELAY * 2,
                     }
-                    client.publish(config_topic, json.dumps(payload).encode("utf8"))
+                    client.publish(
+                        config_topic,
+                        json.dumps(payload).encode("utf8"),
+                        qos=1,
+                        retain=True,
+                    )
                     _LOG.debug(
                         "Added Bluelab %s sensor to Home Assistant: %s", sname, payload
                     )
