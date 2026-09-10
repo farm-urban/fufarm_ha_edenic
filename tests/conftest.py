@@ -12,7 +12,7 @@ REQUIRED_SECRET_KEYS = {"org_key", "api_key", "device_label"}
 
 
 @pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(enable_custom_integrations):
+def auto_enable_custom_integrations(enable_custom_integrations):  # noqa: ARG001
     """Allow Home Assistant to discover custom_components/ during tests."""
     return
 

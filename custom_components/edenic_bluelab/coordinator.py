@@ -38,6 +38,7 @@ class EdenicCoordinator(DataUpdateCoordinator[dict[str, EdenicDeviceData]]):
         devices: list[dict[str, str]],
         scan_interval: int | None = None,
     ) -> None:
+        """Initialize the Edenic data coordinator."""
         super().__init__(
             hass,
             _LOG,
@@ -61,10 +62,10 @@ class EdenicCoordinator(DataUpdateCoordinator[dict[str, EdenicDeviceData]]):
                     get_device_attributes, device_id, self.api_key
                 )
             except EdenicAuthError as err:
-                raise ConfigEntryAuthFailed(
-                    "Edenic API key is no longer valid"
-                ) from err
+                message = "Edenic API key is no longer valid"
+                raise ConfigEntryAuthFailed(message) from err
             except EdenicApiError as err:
-                raise UpdateFailed(f"Error updating {device['label']}: {err}") from err
+                message = f"Error updating {device['label']}: {err}"
+                raise UpdateFailed(message) from err
             result[device_id] = EdenicDeviceData(telemetry=telemetry, alarms=alarms)
         return result

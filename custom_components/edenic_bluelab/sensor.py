@@ -2,11 +2,10 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
@@ -20,6 +19,13 @@ from .const import (
     SENSORS,
 )
 from .coordinator import EdenicCoordinator
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from .const import SensorDefinition
 
 
 def _device_info(device: dict[str, str]) -> DeviceInfo:
@@ -42,8 +48,9 @@ async def async_setup_entry(
 
     entities: list[SensorEntity] = []
     for device in coordinator.devices:
-        for sensor in SENSORS:
-            entities.append(EdenicTelemetrySensor(coordinator, device, sensor))
+        entities.extend(
+            EdenicTelemetrySensor(coordinator, device, sensor) for sensor in SENSORS
+        )
         if alarm_mode in (ALARM_MODE_SUMMARY, ALARM_MODE_ALL):
             entities.append(EdenicAlarmSummarySensor(coordinator, device))
 
@@ -53,7 +60,13 @@ async def async_setup_entry(
 class EdenicTelemetrySensor(CoordinatorEntity[EdenicCoordinator], SensorEntity):
     """Represents a single telemetry value (pH, temperature, EC) for a device."""
 
-    def __init__(self, coordinator, device, sensor_def) -> None:
+    def __init__(
+        self,
+        coordinator: EdenicCoordinator,
+        device: dict[str, str],
+        sensor_def: SensorDefinition,
+    ) -> None:
+        """Initialize a telemetry sensor."""
         super().__init__(coordinator)
         self._device_id = device["id"]
         self._sensor_def = sensor_def
@@ -64,7 +77,7 @@ class EdenicTelemetrySensor(CoordinatorEntity[EdenicCoordinator], SensorEntity):
         self._attr_device_info = _device_info(device)
 
     @property
-    def native_value(self):
+    def native_value(self) -> Any:
         """Return the latest telemetry value for this sensor."""
         data = self.coordinator.data.get(self._device_id)
         if data is None:
@@ -80,7 +93,8 @@ class EdenicAlarmSummarySensor(CoordinatorEntity[EdenicCoordinator], SensorEntit
 
     _attr_icon = "mdi:alarm-light"
 
-    def __init__(self, coordinator, device) -> None:
+    def __init__(self, coordinator: EdenicCoordinator, device: dict[str, str]) -> None:
+        """Initialize an alarm summary sensor."""
         super().__init__(coordinator)
         self._device_id = device["id"]
         self._attr_name = f"Alarms {device['label']}"

@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Any
 import voluptuous as vol
 from homeassistant.config_entries import ConfigFlow, OptionsFlow
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
 
 from .api import EdenicApiError, EdenicAuthError, get_devices
@@ -25,6 +24,7 @@ from .const import (
 
 if TYPE_CHECKING:
     from homeassistant.config_entries import ConfigEntry
+    from homeassistant.data_entry_flow import FlowResult
 
 _LOG = logging.getLogger(__name__)
 
@@ -35,6 +35,7 @@ class EdenicBluelabConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     def __init__(self) -> None:
+        """Initialize the config flow."""
         self._org_key: str | None = None
         self._api_key: str | None = None
         self._device_choices: dict[str, dict[str, str]] = {}
@@ -136,6 +137,7 @@ class EdenicOptionsFlow(OptionsFlow):
     """Handle options for an existing Edenic Bluelab entry."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
+        """Initialize the options flow."""
         self._device_choices: dict[str, dict[str, str]] = {}
         with suppress(AttributeError):
             # Older HA: config_entry is a plain settable attribute.

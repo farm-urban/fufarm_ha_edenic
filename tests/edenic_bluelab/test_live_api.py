@@ -38,7 +38,8 @@ def _find_device(devices: list[dict], label: str) -> dict:
     for device in devices:
         if device["label"] == label:
             return device
-    raise AssertionError(f"No device with label {label!r} found in {devices!r}")
+    message = f"No device with label {label!r} found in {devices!r}"
+    raise AssertionError(message)
 
 
 def test_get_devices_live(edenic_credentials):

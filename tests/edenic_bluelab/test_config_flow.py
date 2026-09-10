@@ -13,8 +13,9 @@ FAKE_DEVICES = [{"id": "dev-1", "label": "4q3f", "name": "Farm Bluelab"}]
 
 # Real orgs also contain gateways/hubs with no label, which must be filtered
 # out before building the device-selection form.
-FAKE_DEVICES_WITH_UNLABELLED = FAKE_DEVICES + [
-    {"id": "dev-2", "label": None, "name": "Gateway"}
+FAKE_DEVICES_WITH_UNLABELLED = [
+    *FAKE_DEVICES,
+    {"id": "dev-2", "label": None, "name": "Gateway"},
 ]
 
 

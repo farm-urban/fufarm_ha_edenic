@@ -29,7 +29,8 @@ def _get(url: str, api_key: str, params: dict | None = None) -> requests.Respons
         url, headers={"Authorization": api_key}, params=params, timeout=TIMEOUT
     )
     if response.status_code in (401, 403):
-        raise EdenicAuthError(f"Authentication failed: {response.status_code}")
+        message = f"Authentication failed: {response.status_code}"
+        raise EdenicAuthError(message)
     if response.status_code != HTTP_OK:
         message = f"Request to {url} failed: {response.status_code} {response.text}"
         raise EdenicApiError(message)
