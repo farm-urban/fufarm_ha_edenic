@@ -30,6 +30,7 @@ class SensorDefinition:
         device_class: str | None,
         unit: str | None,
     ) -> None:
+        """Initialize a telemetry sensor definition."""
         self.key = key
         self.name = name
         self.telemetry_key = telemetry_key
@@ -48,6 +49,7 @@ class AlarmDefinition:
     """Describes one alarm or lockout attribute exposed by a Bluelab device."""
 
     def __init__(self, key: str, name: str) -> None:
+        """Initialize an alarm definition."""
         self.key = key
         self.name = name
 

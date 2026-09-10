@@ -1,5 +1,6 @@
 """Tests for the Edenic Bluelab config flow."""
 
+from typing import Any
 from unittest.mock import patch
 
 from homeassistant import config_entries
@@ -17,7 +18,7 @@ FAKE_DEVICES_WITH_UNLABELLED = FAKE_DEVICES + [
 ]
 
 
-async def test_user_step_shows_form(hass):
+async def test_user_step_shows_form(hass: Any) -> None:
     """The first step of the flow shows the org/API key form."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -26,7 +27,7 @@ async def test_user_step_shows_form(hass):
     assert result["step_id"] == "user"
 
 
-async def test_full_flow_creates_entry(hass):
+async def test_full_flow_creates_entry(hass: Any) -> None:
     """Valid credentials followed by a device selection creates an entry."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -63,7 +64,7 @@ async def test_full_flow_creates_entry(hass):
     assert result["data"]["devices"] == [{"id": "dev-1", "label": "4q3f"}]
 
 
-async def test_devices_step_filters_unlabelled_devices(hass):
+async def test_devices_step_filters_unlabelled_devices(hass: Any) -> None:
     """Gateways/hubs with no label are excluded from the device selector."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}
@@ -85,7 +86,7 @@ async def test_devices_step_filters_unlabelled_devices(hass):
     assert values == {"dev-1"}
 
 
-async def test_invalid_auth_shows_error(hass):
+async def test_invalid_auth_shows_error(hass: Any) -> None:
     """An auth failure re-shows the user form with an error."""
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": config_entries.SOURCE_USER}

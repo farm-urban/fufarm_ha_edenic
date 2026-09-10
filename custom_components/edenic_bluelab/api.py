@@ -13,6 +13,7 @@ from .const import ALARMS
 
 API_BASE = "https://api.edenic.io/api/v1"
 TIMEOUT = 10
+HTTP_OK = 200
 
 
 class EdenicApiError(Exception):
@@ -29,10 +30,9 @@ def _get(url: str, api_key: str, params: dict | None = None) -> requests.Respons
     )
     if response.status_code in (401, 403):
         raise EdenicAuthError(f"Authentication failed: {response.status_code}")
-    if response.status_code != 200:
-        raise EdenicApiError(
-            f"Request to {url} failed: {response.status_code} {response.text}"
-        )
+    if response.status_code != HTTP_OK:
+        message = f"Request to {url} failed: {response.status_code} {response.text}"
+        raise EdenicApiError(message)
     return response
 
 

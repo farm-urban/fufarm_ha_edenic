@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from contextlib import suppress
+from typing import TYPE_CHECKING, Any
 
 import voluptuous as vol
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
+from homeassistant.config_entries import ConfigFlow, OptionsFlow
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import selector
@@ -21,6 +22,9 @@ from .const import (
     DEFAULT_ALARM_MODE,
     DOMAIN,
 )
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
 
 _LOG = logging.getLogger(__name__)
 
@@ -133,14 +137,12 @@ class EdenicOptionsFlow(OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         self._device_choices: dict[str, dict[str, str]] = {}
-        try:
+        with suppress(AttributeError):
             # Older HA: config_entry is a plain settable attribute.
             # HA >= 2024.11: it's a read-only property managed by the base
             # class once the flow manager attaches hass/handler, so this
             # raises AttributeError and can be safely ignored.
             self.config_entry = config_entry
-        except AttributeError:
-            pass
 
     async def async_step_init(
         self, _user_input: dict[str, Any] | None = None

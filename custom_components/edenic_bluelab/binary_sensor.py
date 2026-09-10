@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
@@ -21,6 +20,13 @@ from .const import (
     DOMAIN,
 )
 from .coordinator import EdenicCoordinator
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+    from .const import AlarmDefinition
 
 
 async def async_setup_entry(
@@ -46,7 +52,13 @@ class EdenicAlarmBinarySensor(CoordinatorEntity[EdenicCoordinator], BinarySensor
 
     _attr_device_class = BinarySensorDeviceClass.PROBLEM
 
-    def __init__(self, coordinator, device, alarm_def) -> None:
+    def __init__(
+        self,
+        coordinator: EdenicCoordinator,
+        device: dict[str, str],
+        alarm_def: AlarmDefinition,
+    ) -> None:
+        """Initialize the binary sensor for one alarm definition."""
         super().__init__(coordinator)
         self._device_id = device["id"]
         self._alarm_def = alarm_def
