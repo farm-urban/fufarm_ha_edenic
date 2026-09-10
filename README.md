@@ -1,60 +1,133 @@
-# Notice
+# Edenic Bluelab for Home Assistant
 
-The component and platforms in this repository are not meant to be used by a
-user, but as a "blueprint" that custom component developers can build
-upon, to make more awesome stuff.
+A custom Home Assistant integration for monitoring Edenic Bluelab Pro Controller devices.
 
-HAVE FUN! 😎
+This integration polls the Edenic cloud API and exposes live nutrient monitoring data as Home Assistant sensors, including:
 
-## Why?
+- pH
+- Temperature
+- EC (electrical conductivity)
+- Alarm summary
+- Individual alarm/lockout binary sensors
 
-This is simple, by having custom_components look (README + structure) the same
-it is easier for developers to help each other and for users to start using them.
+It is designed to work as a standard custom component and supports device selection, alarm mode configuration, and polling interval adjustment.
 
-If you are a developer and you want to add things to this "blueprint" that you think more
-developers will have use for, please open a PR to add it :)
+## Features
 
-## What?
+- Live telemetry sensors for each configured Bluelab device
+- Binary sensors for active alarm and lockout states
+- Device-level alarm summary sensor
+- Per-device grouping in Home Assistant
+- Configurable alarm display mode:
+  - individual
+  - summary
+  - all
+- Adjustable polling interval
 
-This repository contains multiple files, here is a overview:
+## Requirements
 
-File | Purpose | Documentation
--- | -- | --
-`.devcontainer.json` | Used for development/testing with Visual Studio Code. | [Documentation](https://code.visualstudio.com/docs/remote/containers)
-`.github/renovate.json` | Dependency update configuration for Renovate (enabled by default). | [Documentation](https://docs.renovatebot.com/configuration-options/)
-`.github/_dependabot.yml` | Dependency update configuration for Dependabot (disabled, see "Dependency updates" below). | [Documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
-`.github/ISSUE_TEMPLATE/*.yml` | Templates for the issue tracker | [Documentation](https://help.github.com/en/github/building-a-strong-community/configuring-issue-templates-for-your-repository)
-`custom_components/integration_blueprint/*` | Integration files, this is where everything happens. | [Documentation](https://developers.home-assistant.io/docs/creating_component_index)
-`CONTRIBUTING.md` | Guidelines on how to contribute. | [Documentation](https://help.github.com/en/github/building-a-strong-community/setting-guidelines-for-repository-contributors)
-`LICENSE` | The license file for the project. | [Documentation](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/licensing-a-repository)
-`README.md` | The file you are reading now, should contain info about the integration, installation and configuration instructions. | [Documentation](https://help.github.com/en/github/writing-on-github/basic-writing-and-formatting-syntax)
-`requirements_dev.txt` | Python packages used for development/testing this integration (also installs lint tooling via `requirements_lint.txt`). | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
-`requirements_lint.txt` | Python packages used to lint this integration (installed by the Lint CI job). | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
-`requirements_common.txt` | Python packages common to CI and local dev, installed first so any pip upgrade completes before other dependencies (e.g. a modern pip). | [Documentation](https://pip.pypa.io/en/stable/user_guide/#requirements-files)
+- Home Assistant instance
+- Edenic organisation key and API key
+- One or more labelled Edenic Bluelab Pro Controller devices
 
-## Dependency updates
+> Only devices with a label in the Edenic system are selectable in the integration setup flow.
 
-This template ships with configuration for **two** dependency update tools. Pick
-**one** and remove or disable the other:
+## Installation
 
-- **Renovate** (`.github/renovate.json`) is enabled by default.
-- **Dependabot** (`.github/_dependabot.yml`) is included but disabled — the `_`
-  prefix means GitHub ignores it. To use Dependabot instead, rename the file
-  back to `.github/dependabot.yml` and delete `.github/renovate.json`.
+### Option 1: Manual install
 
-## How?
+1. Copy the `custom_components/edenic_bluelab` directory into your Home Assistant configuration directory under `custom_components/`.
+2. Restart Home Assistant.
+3. Go to Settings > Devices & Services > Add Integration.
+4. Search for `Edenic Bluelab` and complete the setup flow.
 
-1. Create a new repository in GitHub, using this repository as a template by clicking the "Use this template" button in the GitHub UI.
-1. Open your new repository in Visual Studio Code devcontainer (Preferably with the "`Dev Containers: Clone Repository in Named Container Volume...`" option).
-1. Rename all instances of the `integration_blueprint` to `custom_components/<your_integration_domain>` (e.g. `custom_components/awesome_integration`).
-1. Rename all instances of the `Integration Blueprint` to `<Your Integration Name>` (e.g. `Awesome Integration`).
-1. Run the `scripts/develop` to start HA and test out your new integration.
+### Option 2: HACS
 
-## Next steps
+1. Add this repository as a custom repository in HACS.
+2. Install the integration from HACS.
+3. Restart Home Assistant.
+4. Add the integration from the Home Assistant UI.
 
-These are some next steps you may want to look into:
-- Add tests to your integration, [`pytest-homeassistant-custom-component`](https://github.com/MatthewFlamm/pytest-homeassistant-custom-component) can help you get started.
-- Add brand images (logo/icon).
-- Create your first release.
-- Share your integration on the [Home Assistant Forum](https://community.home-assistant.io/).
-- Submit your integration to [HACS](https://hacs.xyz/docs/publish/start).
+## Configuration
+
+During setup, you will be asked to provide:
+
+- Organisation key
+- API key
+- Device selection
+
+After setup, you can adjust options via:
+
+- Settings > Devices & Services > Edenic Bluelab > Configure
+
+Available options include:
+
+- Alarm mode
+  - `individual`: expose one binary sensor per alarm/lockout
+  - `summary`: expose the alarm summary sensor only
+  - `all`: expose both summary and individual alarm sensors
+- Scan interval (seconds)
+
+## Entities created
+
+### Sensors
+
+For each selected device:
+
+- `pH <device label>`
+- `Temperature <device label>`
+- `EC <device label>`
+- `Alarms <device label>` (summary sensor)
+
+### Binary sensors
+
+When the alarm mode includes individual or all alarms, a binary sensor is created for each configured device alarm or lockout, for example:
+
+- EC low alarm
+- EC high alarm
+- pH low alarm
+- pH high alarm
+- Temperature low alarm
+- Temperature high alarm
+- Other lockout
+- Ineffective control lockout
+- Low EC lockout
+- Normally closed lockout
+- Normally open lockout
+
+## Troubleshooting
+
+### No devices found
+
+This usually means:
+
+- the organisation key is incorrect
+- the API key is invalid
+- no labelled Bluelab devices are associated with the org
+
+### Authentication errors
+
+Verify that the provided API key is valid and still active in Edenic.
+
+### Entities missing after changing alarm mode
+
+The integration cleans up stale entity registrations when options are changed, so Home Assistant will remove entities that are no longer expected.
+
+## Development
+
+This project includes support files for a HA custom component development workflow. The integration uses:
+
+- `config_flow.py` for setup and options UI
+- `coordinator.py` for polling and data refresh
+- `sensor.py` for telemetry and summary sensors
+- `binary_sensor.py` for alarm binary sensors
+- `api.py` for Edenic API calls
+
+## License
+
+This project is licensed under the MIT license. See the `LICENSE` file for details.
+
+## Project status
+
+This component is intended for Home Assistant custom integrations and may be updated over time to match API or feature changes from Edenic.
+
