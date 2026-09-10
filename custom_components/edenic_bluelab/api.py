@@ -1,4 +1,5 @@
-"""Thin synchronous client for the Edenic API.
+"""
+Thin synchronous client for the Edenic API.
 
 All functions are blocking (uses ``requests``) and must be called via
 ``hass.async_add_executor_job`` from async code.

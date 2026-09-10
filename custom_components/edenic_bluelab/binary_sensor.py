@@ -51,9 +51,7 @@ class EdenicAlarmBinarySensor(CoordinatorEntity[EdenicCoordinator], BinarySensor
         self._device_id = device["id"]
         self._alarm_def = alarm_def
         self._attr_name = f"{alarm_def.name} {device['label']}"
-        self._attr_unique_id = (
-            f"{self._device_id}_{alarm_def.key.replace('.', '_')}"
-        )
+        self._attr_unique_id = f"{self._device_id}_{alarm_def.key.replace('.', '_')}"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._device_id)},
             name=device["label"],

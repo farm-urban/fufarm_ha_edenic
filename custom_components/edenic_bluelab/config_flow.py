@@ -142,7 +142,9 @@ class EdenicOptionsFlow(OptionsFlow):
         except AttributeError:
             pass
 
-    async def async_step_init(self, _user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_init(
+        self, _user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Show a menu to either change settings or manage tracked devices."""
         return self.async_show_menu(
             step_id="init", menu_options=["settings", "devices"]
@@ -237,4 +239,3 @@ class EdenicOptionsFlow(OptionsFlow):
         return self.async_show_form(
             step_id="devices", data_schema=schema, errors=errors
         )
-

@@ -14,12 +14,13 @@ REQUIRED_SECRET_KEYS = {"org_key", "api_key", "device_label"}
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Allow Home Assistant to discover custom_components/ during tests."""
-    yield
+    return
 
 
 @pytest.fixture(scope="session")
 def edenic_credentials():
-    """Real Edenic credentials for live API tests, loaded from tests/secrets.yaml.
+    """
+    Real Edenic credentials for live API tests, loaded from tests/secrets.yaml.
 
     Skips the test if the file is missing or incomplete, so `pytest -m live`
     fails loudly with a clear message rather than a stack trace.

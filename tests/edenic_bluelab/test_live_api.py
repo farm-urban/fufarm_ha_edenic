@@ -1,4 +1,5 @@
-"""Tests that call the real Edenic API.
+"""
+Tests that call the real Edenic API.
 
 These require tests/secrets.yaml with real credentials (see
 tests/secrets.yaml.template) and are excluded from the default test run.
@@ -21,7 +22,8 @@ pytestmark = pytest.mark.live
 
 @pytest.fixture(autouse=True)
 def _allow_real_network():
-    """Override pytest-homeassistant-custom-component's localhost-only socket guard.
+    """
+    Override pytest-homeassistant-custom-component's localhost-only socket guard.
 
     That plugin unconditionally restricts connections to 127.0.0.1 on every
     test via its own pytest_runtest_setup hook, which runs before fixtures.
@@ -30,7 +32,6 @@ def _allow_real_network():
     """
     pytest_socket.enable_socket()
     pytest_socket.socket_allow_hosts(["api.edenic.io"], allow_unix_socket=True)
-    yield
 
 
 def _find_device(devices: list[dict], label: str) -> dict:
@@ -42,17 +43,13 @@ def _find_device(devices: list[dict], label: str) -> dict:
 
 def test_get_devices_live(edenic_credentials):
     """The configured org returns a device list containing the test device."""
-    devices = get_devices(
-        edenic_credentials["org_key"], edenic_credentials["api_key"]
-    )
+    devices = get_devices(edenic_credentials["org_key"], edenic_credentials["api_key"])
     _find_device(devices, edenic_credentials["device_label"])
 
 
 def test_get_telemetry_live(edenic_credentials):
     """The test device returns telemetry with the expected keys."""
-    devices = get_devices(
-        edenic_credentials["org_key"], edenic_credentials["api_key"]
-    )
+    devices = get_devices(edenic_credentials["org_key"], edenic_credentials["api_key"])
     device = _find_device(devices, edenic_credentials["device_label"])
 
     telemetry = get_telemetry(device["id"], edenic_credentials["api_key"])
@@ -63,9 +60,7 @@ def test_get_telemetry_live(edenic_credentials):
 
 def test_get_device_attributes_live(edenic_credentials):
     """The test device returns a dict of alarm attribute keys to booleans."""
-    devices = get_devices(
-        edenic_credentials["org_key"], edenic_credentials["api_key"]
-    )
+    devices = get_devices(edenic_credentials["org_key"], edenic_credentials["api_key"])
     device = _find_device(devices, edenic_credentials["device_label"])
 
     attributes = get_device_attributes(device["id"], edenic_credentials["api_key"])

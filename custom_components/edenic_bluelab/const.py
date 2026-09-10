@@ -39,9 +39,7 @@ class SensorDefinition:
 
 SENSORS: tuple[SensorDefinition, ...] = (
     SensorDefinition("ph", "pH", "ph", "ph", None),
-    SensorDefinition(
-        "temp", "Temperature", "temperature", "temperature", "°C"
-    ),
+    SensorDefinition("temp", "Temperature", "temperature", "temperature", "°C"),
     SensorDefinition("ec", "EC", "electrical_conductivity", None, "mS/cm"),
 )
 
@@ -62,9 +60,7 @@ ALARMS: tuple[AlarmDefinition, ...] = (
     AlarmDefinition("alarm.temp_low_alarm", "Temperature low alarm"),
     AlarmDefinition("alarm.temp_high_alarm", "Temperature high alarm"),
     AlarmDefinition("alarm.other_lockout", "Other lockout"),
-    AlarmDefinition(
-        "alarm.ineffective_control_lockout", "Ineffective control lockout"
-    ),
+    AlarmDefinition("alarm.ineffective_control_lockout", "Ineffective control lockout"),
     AlarmDefinition("alarm.low_ec_lockout", "Low EC lockout"),
     AlarmDefinition("alarm.normally_closed_lockout", "Normally closed lockout"),
     AlarmDefinition("alarm.normally_open_lockout", "Normally open lockout"),
