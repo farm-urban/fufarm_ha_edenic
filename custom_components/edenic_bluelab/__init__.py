@@ -38,7 +38,10 @@ def _expected_unique_ids(devices: list[dict[str, str]], alarm_mode: str) -> set[
 
 
 def _async_remove_stale_entities(
-    hass: HomeAssistant, entry: ConfigEntry, devices: list[dict[str, str]], alarm_mode: str
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    devices: list[dict[str, str]],
+    alarm_mode: str,
 ) -> None:
     """Remove entities left behind by a previous alarm_mode (e.g. all -> summary)."""
     expected = _expected_unique_ids(devices, alarm_mode)

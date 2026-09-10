@@ -9,9 +9,10 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import EdenicApiError, get_device_attributes, get_telemetry
+from .api import EdenicApiError, EdenicAuthError, get_device_attributes, get_telemetry
 from .const import DEFAULT_SCAN_INTERVAL
 
 _LOG = logging.getLogger(__name__)
@@ -57,6 +58,10 @@ class EdenicCoordinator(DataUpdateCoordinator[dict[str, EdenicDeviceData]]):
                 alarms = await self.hass.async_add_executor_job(
                     get_device_attributes, device_id, self.api_key
                 )
+            except EdenicAuthError as err:
+                raise ConfigEntryAuthFailed(
+                    "Edenic API key is no longer valid"
+                ) from err
             except EdenicApiError as err:
                 raise UpdateFailed(f"Error updating {device['label']}: {err}") from err
             result[device_id] = EdenicDeviceData(telemetry=telemetry, alarms=alarms)
