@@ -1,11 +1,8 @@
 """
 Tests that call the real Edenic API.
 
-These require tests/secrets.yaml with real credentials (see
-tests/secrets.yaml.template) and are excluded from the default test run.
-
-Run explicitly with:
-    pytest -m live
+These require secrets.yaml with real credentials (see
+secrets.yaml.template) and are excluded from the default test run.
 """
 
 import pytest
@@ -16,8 +13,6 @@ from custom_components.edenic_bluelab.api import (
     get_devices,
     get_telemetry,
 )
-
-pytestmark = pytest.mark.live
 
 
 @pytest.fixture(autouse=True)
