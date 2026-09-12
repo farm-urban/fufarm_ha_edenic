@@ -126,6 +126,39 @@ class EdenicBluelabConfigFlow(ConfigFlow, domain=DOMAIN):
             step_id="devices", data_schema=schema, errors=errors
         )
 
+    async def async_step_reauth(self, _entry_data: dict[str, Any]) -> FlowResult:
+        """Entry point HA calls when ConfigEntryAuthFailed was raised."""
+        return await self.async_step_reauth_confirm()
+
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Ask for a new API key and validate it."""
+        errors: dict[str, str] = {}
+        reauth_entry = self._get_reauth_entry()
+
+        if user_input is not None:
+            try:
+                await self.hass.async_add_executor_job(
+                    get_devices,
+                    reauth_entry.data[CONF_ORG_KEY],
+                    user_input[CONF_API_KEY],
+                )
+            except EdenicAuthError:
+                errors["base"] = "auth"
+            except EdenicApiError:
+                errors["base"] = "cannot_connect"
+            else:
+                return self.async_update_reload_and_abort(
+                    reauth_entry,
+                    data={**reauth_entry.data, CONF_API_KEY: user_input[CONF_API_KEY]},
+                )
+
+        schema = vol.Schema({vol.Required(CONF_API_KEY): str})
+        return self.async_show_form(
+            step_id="reauth_confirm", data_schema=schema, errors=errors
+        )
+
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> EdenicOptionsFlow:
