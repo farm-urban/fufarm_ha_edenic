@@ -17,6 +17,7 @@ ignore = [
 
 [lint.per-file-ignores]
 "tests/**/*.py" = ["ANN001", "ANN201", "ANN202", "S101"]
+"tests_live/**" = ["S101"]
 
 [lint.flake8-pytest-style]
 fixture-parentheses = false

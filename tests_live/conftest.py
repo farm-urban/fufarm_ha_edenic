@@ -1,16 +1,20 @@
 """Shared pytest fixtures for testing custom_components/edenic_bluelab."""
 
 import pathlib
+from typing import TYPE_CHECKING, cast
 
 import pytest
 import yaml
+
+if TYPE_CHECKING:
+    from tests_live.types import EdenicCredentials
 
 SECRETS_PATH = pathlib.Path(__file__).parent / "secrets.yaml"
 REQUIRED_SECRET_KEYS = {"org_key", "api_key", "device_label"}
 
 
 @pytest.fixture(scope="session")
-def edenic_credentials():
+def edenic_credentials() -> EdenicCredentials:
     """
     Real Edenic credentials for live API tests, loaded from tests_live/secrets.yaml.
 
@@ -19,12 +23,12 @@ def edenic_credentials():
     """
     if not SECRETS_PATH.exists():
         pytest.skip(
-            "tests_live/secrets.yaml not found. Copy tests_live/secrets.yaml.template to "
-            "tests_live/secrets.yaml and fill in real Edenic credentials to run live "
+            f"{SECRETS_PATH} not found. Copy {SECRETS_PATH}.template to"
+            f"{SECRETS_PATH} and fill in real Edenic credentials to run live "
             "API tests."
         )
     data = yaml.safe_load(SECRETS_PATH.read_text(encoding="utf-8")) or {}
     missing = REQUIRED_SECRET_KEYS - data.keys()
     if missing:
         pytest.skip(f"tests_live/secrets.yaml is missing keys: {', '.join(missing)}")
-    return data
+    return cast("EdenicCredentials", data)

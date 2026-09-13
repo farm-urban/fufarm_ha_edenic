@@ -5,6 +5,8 @@ These require secrets.yaml with real credentials (see
 secrets.yaml.template) and are excluded from the default test run.
 """
 
+from typing import TYPE_CHECKING
+
 import pytest
 import pytest_socket
 
@@ -14,9 +16,12 @@ from custom_components.edenic_bluelab.api import (
     get_telemetry,
 )
 
+if TYPE_CHECKING:
+    from tests_live.types import EdenicCredentials
+
 
 @pytest.fixture(autouse=True)
-def _allow_real_network():
+def _allow_real_network() -> None:
     """
     Override pytest-homeassistant-custom-component's localhost-only socket guard.
 
@@ -37,13 +42,13 @@ def _find_device(devices: list[dict], label: str) -> dict:
     raise AssertionError(message)
 
 
-def test_get_devices_live(edenic_credentials):
+def test_get_devices_live(edenic_credentials: EdenicCredentials) -> None:
     """The configured org returns a device list containing the test device."""
     devices = get_devices(edenic_credentials["org_key"], edenic_credentials["api_key"])
     _find_device(devices, edenic_credentials["device_label"])
 
 
-def test_get_telemetry_live(edenic_credentials):
+def test_get_telemetry_live(edenic_credentials: EdenicCredentials) -> None:
     """The test device returns telemetry with the expected keys."""
     devices = get_devices(edenic_credentials["org_key"], edenic_credentials["api_key"])
     device = _find_device(devices, edenic_credentials["device_label"])
@@ -54,7 +59,7 @@ def test_get_telemetry_live(edenic_credentials):
         assert key in telemetry
 
 
-def test_get_device_attributes_live(edenic_credentials):
+def test_get_device_attributes_live(edenic_credentials: EdenicCredentials) -> None:
     """The test device returns a dict of alarm attribute keys to booleans."""
     devices = get_devices(edenic_credentials["org_key"], edenic_credentials["api_key"])
     device = _find_device(devices, edenic_credentials["device_label"])
