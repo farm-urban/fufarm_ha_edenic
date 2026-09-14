@@ -8,3 +8,9 @@ cd "$(dirname "$0")/.."
 # before the rest of the dependencies are installed.
 python3 -m pip install --requirement requirements_common.txt
 python3 -m pip install --requirement requirements_dev.txt
+# pytest-homeassistant-custom-component pins pytest-asyncio==1.3.0 exactly,
+# which predates the fix for a Python 3.14 signature-inspection crash
+# (see: pytest-asyncio changelog re: annotationlib/FORWARDREF).
+# Install it separately with --no-deps — see requirements_dev.txt install steps
+# below / in scripts/setup.
+pip install --break-system-packages --no-deps "pytest-homeassistant-custom-component==0.13.340"

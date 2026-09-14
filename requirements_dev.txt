@@ -1,6 +1,6 @@
 -r requirements_lint.txt
 colorlog==6.10.1
 homeassistant==2026.6.4
+# see scripts/setup for why pytest-homeassistant-custom-component is installed separately with --no-deps
 pytest-asyncio>=1.4.0,<2
-pytest-homeassistant-custom-component==0.13.340
 PyYAML
