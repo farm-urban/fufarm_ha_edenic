@@ -102,6 +102,7 @@ class EdenicBluelabConfigFlow(ConfigFlow, domain=DOMAIN):
                     CONF_API_KEY: self._api_key,
                     CONF_DEVICES: devices,
                 },
+                options={CONF_ALARM_MODE: user_input[CONF_ALARM_MODE]},
             )
 
         options = {
@@ -118,6 +119,14 @@ class EdenicBluelabConfigFlow(ConfigFlow, domain=DOMAIN):
                         ],
                         multiple=True,
                         mode=selector.SelectSelectorMode.LIST,
+                    )
+                ),
+                vol.Required(
+                    CONF_ALARM_MODE, default=DEFAULT_ALARM_MODE
+                ): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=list(ALARM_MODES),
+                        mode=selector.SelectSelectorMode.DROPDOWN,
                     )
                 ),
             }
